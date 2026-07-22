@@ -93,7 +93,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run FastAPI Server
-python PROJECT_1_CUBO_IMPLEMENTATION.py
+python KRONOS_IMPLEMENTATION.py
 ```
 *Backend API will be live at:* `http://localhost:8000`
 
