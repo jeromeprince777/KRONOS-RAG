@@ -1,2 +1,4 @@
-*.html linguist-detectable=false
-cubo-frontend/index.html linguist-detectable=false
+*.jsx linguist-language=JavaScript
+*.html linguist-vendored
+*.css linguist-vendored
+
