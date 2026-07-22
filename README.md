@@ -80,7 +80,7 @@ graph TD
 ```bash
 # Clone repository
 git clone https://github.com/jeromeprince777/KRONOS-RAG.git
-cd KRONOS-RAG
+cd KRONOS-RAG/backend
 
 # Initialize Python Virtual Environment
 python -m venv venv
@@ -93,13 +93,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run FastAPI Server
-python KRONOS_IMPLEMENTATION.py
+python app.py
 ```
 *Backend API will be live at:* `http://localhost:8000`
 
 ### 3. Frontend Setup
 ```bash
-cd cubo-frontend
+cd ../frontend
 
 # Install dependencies
 npm install
