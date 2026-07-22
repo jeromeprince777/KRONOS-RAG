@@ -1,0 +1,48 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Data & logs
+cubo_data/
+models/
+logs/
+*.db
+*.bin
+*.json
+search_test_out.txt
+test_upload.txt
+check_deps.py
+wait_for_backend.py
+debug_search_api*.py
+test_search_api*.py
+
+# Node.js
+node_modules/
+dist/
+.vite/
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db

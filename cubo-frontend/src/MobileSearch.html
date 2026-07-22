@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>CUBO | Intelligent Search</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#0053db",
+                    "on-primary": "#ffffff",
+                    "text-secondary": "#6B7280",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "danger": "#EF4444",
+                    "on-secondary-fixed": "#002113",
+                    "border": "#E5E7EB",
+                    "tertiary-container": "#996100",
+                    "surface-bright": "#f9f9ff",
+                    "primary-fixed": "#dbe1ff",
+                    "tertiary-fixed": "#ffddb8",
+                    "surface-container-highest": "#dce2f3",
+                    "outline-variant": "#c3c6d7",
+                    "surface-variant": "#dce2f3",
+                    "background": "#F9FAFB",
+                    "primary-container": "#2563eb",
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#e7eefe",
+                    "text-primary": "#111827",
+                    "on-surface-variant": "#434655",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#6cf8bb",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-surface": "#151c27",
+                    "surface-dim": "#d3daea",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#006c49",
+                    "card": "#FFFFFF",
+                    "surface-container-high": "#e2e8f8",
+                    "on-secondary-container": "#00714d",
+                    "inverse-primary": "#b4c5ff",
+                    "primary": "#004ac6",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-primary-fixed": "#00174b",
+                    "outline": "#737686",
+                    "on-tertiary-container": "#ffeedd",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#2a313d",
+                    "secondary-fixed": "#6ffbbe",
+                    "tertiary": "#784b00",
+                    "surface-container-low": "#f0f3ff",
+                    "on-background": "#151c27",
+                    "error": "#ba1a1a",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "inverse-on-surface": "#ebf1ff",
+                    "on-primary-container": "#eeefff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "gutter": "1rem",
+                    "container-max": "1280px",
+                    "margin-page": "2rem",
+                    "stack-lg": "1.5rem"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "17px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "31px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "21px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "38px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-tab { color: #004ac6 !important; }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f3ff 25%, #e7eefe 50%, #f0f3ff 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .bottom-sheet {
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bottom-sheet.open { transform: translateY(0); }
+        .streaming-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+            color: #004ac6;
+            margin-left: 2px;
+        }
+        @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-20">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface z-40 flex items-center justify-between px-4 h-14 w-full shadow-sm border-b border-border">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full active:opacity-80">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<div class="flex items-center gap-2">
+<img alt="CUBO" class="h-6 w-auto" src="https://lh3.googleusercontent.com/aida/AP1WRLuzJPFLGaU2nvUkkeHNJOAuClX0BkbPvqZYXc9whLoGcRpqIFHlRNjN6kio_Pjsj8BLmpxA0hgpyxTw8uVoRICJGgnroogHvfI8ETo3atB6JR97SNxdju-JxoC8z43nVVWKB3wG4mrmNhOPcYgeD4pr-xKenxyldDV80538MZ60i5NyhNSXIR5lnX5JtOotkfuPa1U6s7790PF-nc2VFEX8EA3RDbnKRDNgF9Zyoeaw1IXC7O2D00DEaCg"/>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">CUBO</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-[12px] border border-outline-variant ml-2">
+                JD
+            </div>
+</div>
+</header>
+<main class="pt-16 px-4 max-w-md mx-auto">
+<!-- Search Section -->
+<section class="mt-6 mb-8">
+<div class="relative flex items-center">
+<input class="w-full h-14 bg-card border-2 border-border rounded-lg pl-12 pr-24 focus:border-primary focus:ring-0 text-body-lg shadow-sm transition-all" placeholder="Search intelligence, documents..." type="text" value="Q4 Financial Report analysis"/>
+<span class="material-symbols-outlined absolute left-4 text-outline">search</span>
+<div class="absolute right-2 flex items-center gap-2">
+<button class="p-2 text-primary hover:bg-primary-fixed/20 rounded-md">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary-fixed/20 rounded-md">
+<span class="material-symbols-outlined">photo_camera</span>
+</button>
+</div>
+</div>
+</section>
+<!-- AI Answer Box -->
+<section class="mb-8" id="ai-answer-section">
+<div class="bg-card border-2 border-primary rounded-lg p-4 shadow-lg relative overflow-hidden">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-md text-label-md text-primary">AI INSIGHT</span>
+</div>
+<div class="flex gap-2">
+<button class="text-text-secondary hover:text-primary"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+<button class="text-text-secondary hover:text-primary"><span class="material-symbols-outlined text-[18px]">share</span></button>
+</div>
+</div>
+<p class="text-body-md text-on-surface leading-relaxed streaming-cursor">
+                    Based on the latest Q4 documents, the revenue growth exceeded projections by 12.4%, primarily driven by the cloud services sector. However, operating expenses rose by 5% due to hardware scaling costs. Key risks include...
+                </p>
+<div class="mt-4 flex flex-wrap gap-2">
+<span class="bg-surface-container text-on-secondary-container px-3 py-1 rounded-full text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">link</span> Source: Q4_Report.pdf
+                    </span>
+<span class="bg-surface-container text-on-secondary-container px-3 py-1 rounded-full text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">link</span> Source: Internal_Memo_Dec.docx
+                    </span>
+</div>
+</div>
+</section>
+<!-- Results List -->
+<section class="space-y-4" id="results-container">
+<h3 class="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">
+                DOCUMENT RESULTS (128)
+                <span class="material-symbols-outlined text-[18px]">filter_list</span>
+</h3>
+<!-- Result Card 1 -->
+<div class="bg-card border border-border rounded-lg p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.98] group">
+<div class="flex justify-between items-start">
+<div class="flex-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Q4 Financial Summary 2023</h4>
+<div class="flex items-center gap-3 mt-2">
+<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-caption font-bold">98% RELEVANCE</span>
+<span class="text-text-secondary text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                            </span>
+</div>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between border-t border-border pt-4">
+<span class="text-caption text-text-secondary">Modified Dec 15, 2023</span>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                        View More <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Result Card 2 -->
+<div class="bg-card border border-border rounded-lg p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.98] group">
+<div class="flex justify-between items-start">
+<div class="flex-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Infrastructure Scaling Costs</h4>
+<div class="flex items-center gap-3 mt-2">
+<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-caption font-bold">85% RELEVANCE</span>
+<span class="text-text-secondary text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">description</span> DOCX
+                            </span>
+</div>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between border-t border-border pt-4">
+<span class="text-caption text-text-secondary">Modified Jan 02, 2024</span>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                        View More <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Skeleton Loader -->
+<div class="bg-card border border-border rounded-lg p-4 shadow-sm space-y-4 opacity-60">
+<div class="h-6 w-3/4 skeleton rounded"></div>
+<div class="flex gap-2">
+<div class="h-4 w-20 skeleton rounded"></div>
+<div class="h-4 w-16 skeleton rounded"></div>
+</div>
+<div class="border-t border-border pt-4 flex justify-between">
+<div class="h-4 w-24 skeleton rounded"></div>
+<div class="h-4 w-16 skeleton rounded"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center z-50 active:scale-90 transition-transform" id="fab-trigger">
+<span class="material-symbols-outlined text-[28px]" id="fab-icon">add</span>
+</button>
+<!-- Bottom Sheet Menu (Simulated) -->
+<div class="fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity z-[55]" id="overlay" onclick="toggleBottomSheet()"></div>
+<div class="bottom-sheet fixed bottom-0 left-0 w-full bg-card rounded-t-2xl z-[60] pb-safe shadow-2xl" id="bottom-sheet">
+<div class="flex flex-col p-4">
+<div class="w-12 h-1 bg-outline-variant rounded-full self-center mb-6"></div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 px-2">CUBO Menu</h2>
+<div class="space-y-1">
+<button class="w-full flex items-center gap-4 p-4 hover:bg-surface-container rounded-lg transition-colors text-primary bg-primary-fixed/20">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-md">New Search</span>
+</button>
+<button class="w-full flex items-center gap-4 p-4 hover:bg-surface-container rounded-lg transition-colors text-on-surface">
+<span class="material-symbols-outlined">upload_file</span>
+<span class="font-label-md">Upload Document</span>
+</button>
+<button class="w-full flex items-center gap-4 p-4 hover:bg-surface-container rounded-lg transition-colors text-on-surface">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-md">Saved Searches</span>
+</button>
+<button class="w-full flex items-center gap-4 p-4 hover:bg-surface-container rounded-lg transition-colors text-on-surface">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md">Settings</span>
+</button>
+</div>
+<button class="mt-6 w-full py-4 text-center text-text-secondary font-label-md" onclick="toggleBottomSheet()">Close</button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface shadow-[0_-1px_3px_rgba(0,0,0,0.1)] border-t border-border rounded-t-xl pb-safe">
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl p-2 transition-transform active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container transition-transform active:scale-90">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container transition-transform active:scale-90">
+<span class="material-symbols-outlined">folder_open</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container transition-transform active:scale-90">
+<span class="material-symbols-outlined">person</span>
+</button>
+</nav>
+<script>
+        const fab = document.getElementById('fab-trigger');
+        const fabIcon = document.getElementById('fab-icon');
+        const sheet = document.getElementById('bottom-sheet');
+        const overlay = document.getElementById('overlay');
+
+        function toggleBottomSheet() {
+            const isOpen = sheet.classList.contains('open');
+            if (isOpen) {
+                sheet.classList.remove('open');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                fabIcon.style.transform = 'rotate(0deg)';
+                fabIcon.innerText = 'add';
+            } else {
+                sheet.classList.add('open');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                fabIcon.style.transform = 'rotate(45deg)';
+                fabIcon.innerText = 'close';
+            }
+            fabIcon.style.transition = 'transform 0.3s ease';
+        }
+
+        fab.addEventListener('click', toggleBottomSheet);
+
+        // Simple mock for "streaming" effect
+        const answerText = document.querySelector('.streaming-cursor');
+        const fullText = answerText.innerText;
+        answerText.innerText = '';
+        let i = 0;
+        function typeWriter() {
+            if (i < fullText.length) {
+                answerText.innerText += fullText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 15);
+            }
+        }
+        setTimeout(typeWriter, 500);
+    </script>
+</body></html>
