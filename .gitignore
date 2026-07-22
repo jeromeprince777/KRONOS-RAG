@@ -30,6 +30,7 @@ logs/
 *.db
 *.bin
 *.json
+OllamaSetup.exe
 search_test_out.txt
 test_upload.txt
 check_deps.py
